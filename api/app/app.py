@@ -25,8 +25,10 @@ def create_app():
 
     # import and register blueprints
     from app.routes.auth import auth_bp
+    from app.routes.cases import cases_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(cases_bp, url_prefix="/api/cases")
 
     # error handler for HTTPExceptions raised by abort() or other code
     @app.errorhandler(HTTPException)
