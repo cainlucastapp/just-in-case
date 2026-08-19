@@ -6,6 +6,8 @@ api/.env
 api/venv/
 __pycache__/
 *.pyc
+api/*.db
+api/instance/
 
 # Node
 client/node_modules/
