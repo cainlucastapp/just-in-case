@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { CaseForm } from '../components/cases/CaseForm'
 import { CaseShares } from '../components/cases/CaseShares'
-import { ItemForm } from '../components/items/ItemForm'
 import { ItemRow } from '../components/items/ItemRow'
 import { useAuth } from '../context/auth-context'
+import { attachItem, detachItem, listCaseItems } from '../services/caseItems'
 import { getCase, updateCase } from '../services/cases'
-import { createItem, deleteItem, listItems, updateItem } from '../services/items'
+import { deleteItem, listItems, updateItem } from '../services/items'
 import { createShare, deleteShare, listShares } from '../services/shares'
 
 export function CaseDetailPage() {
@@ -16,13 +16,16 @@ export function CaseDetailPage() {
   const { user } = useAuth()
   const [caseData, setCaseData] = useState(null)
   const [items, setItems] = useState([])
+  const [myItems, setMyItems] = useState([])
+  const [selectedItemId, setSelectedItemId] = useState('')
   const [shares, setShares] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isAttaching, setIsAttaching] = useState(false)
 
-  // load case and items
+  // load case and its attached items
   useEffect(() => {
-    Promise.all([getCase(caseId), listItems(caseId)])
+    Promise.all([getCase(caseId), listCaseItems(caseId)])
       .then(([fetchedCase, fetchedItems]) => {
         setCaseData(fetchedCase)
         setItems(fetchedItems)
@@ -42,6 +45,18 @@ export function CaseDetailPage() {
       .catch((err) => setError(err.message || 'unable to load shares'))
   }, [caseId, isOwner])
 
+  // owner's full item list, for the attach picker
+  useEffect(() => {
+    if (!isOwner) return
+    listItems()
+      .then(setMyItems)
+      .catch((err) => setError(err.message || 'unable to load your items'))
+  }, [isOwner])
+
+  // items the owner has that aren't already attached to this case
+  const attachedIds = new Set(items.map((item) => item.id))
+  const attachableItems = myItems.filter((item) => !attachedIds.has(item.id))
+
   // update case
   async function handleSaveCase(values) {
     setError('')
@@ -54,15 +69,20 @@ export function CaseDetailPage() {
     }
   }
 
-  // create item
-  async function handleCreateItem(values) {
+  // attach an existing item
+  async function handleAttach(event) {
+    event.preventDefault()
+    if (!selectedItemId) return
     setError('')
+    setIsAttaching(true)
     try {
-      const newItem = await createItem(caseId, values)
-      setItems((current) => [newItem, ...current])
+      const attached = await attachItem(caseId, selectedItemId)
+      setItems((current) => [attached, ...current])
+      setSelectedItemId('')
     } catch (err) {
-      setError(err.message || 'unable to create item')
-      throw err
+      setError(err.message || 'unable to attach item')
+    } finally {
+      setIsAttaching(false)
     }
   }
 
@@ -70,7 +90,7 @@ export function CaseDetailPage() {
   async function handleSaveItem(itemId, updates) {
     setError('')
     try {
-      const updated = await updateItem(caseId, itemId, updates)
+      const updated = await updateItem(itemId, updates)
       setItems((current) =>
         current.map((item) => (item.id === itemId ? updated : item)),
       )
@@ -80,11 +100,22 @@ export function CaseDetailPage() {
     }
   }
 
-  // delete item
-  async function handleDeleteItem(itemId) {
+  // remove item from case - item itself is untouched
+  async function handleRemoveFromCase(itemId) {
     setError('')
     try {
-      await deleteItem(caseId, itemId)
+      await detachItem(caseId, itemId)
+      setItems((current) => current.filter((item) => item.id !== itemId))
+    } catch (err) {
+      setError(err.message || 'unable to remove item from case')
+    }
+  }
+
+  // delete item forever
+  async function handleDeleteForever(itemId) {
+    setError('')
+    try {
+      await deleteItem(itemId)
       setItems((current) => current.filter((item) => item.id !== itemId))
     } catch (err) {
       setError(err.message || 'unable to delete item')
@@ -142,13 +173,27 @@ export function CaseDetailPage() {
 
       <h2>Items</h2>
 
-      {/* create item */}
+      {/* attach an existing item */}
       {isOwner && (
-        <ItemForm
-          submitLabel="Add item"
-          onSubmit={handleCreateItem}
-          resetOnSubmit
-        />
+        <form onSubmit={handleAttach}>
+          <label>
+            Attach an item
+            <select
+              value={selectedItemId}
+              onChange={(event) => setSelectedItemId(event.target.value)}
+            >
+              <option value="">Select an item…</option>
+              {attachableItems.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" disabled={isAttaching || !selectedItemId}>
+            {isAttaching ? 'Attaching…' : 'Attach'}
+          </button>
+        </form>
       )}
 
       <ul>
@@ -158,7 +203,8 @@ export function CaseDetailPage() {
             item={item}
             isOwner={isOwner}
             onSave={handleSaveItem}
-            onDelete={handleDeleteItem}
+            onRemoveFromCase={handleRemoveFromCase}
+            onDeleteForever={handleDeleteForever}
           />
         ))}
       </ul>

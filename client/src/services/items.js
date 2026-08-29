@@ -2,27 +2,26 @@
 
 import { api } from './client'
 
-// list all items for a case
-export function listItems(caseId) {
-  return api.get(`/cases/${caseId}/items`)
+// list all items the current user owns
+export function listItems() {
+  return api.get('/items')
 }
 
-
-// get a single item by id
-export function getItem(caseId, itemId) {
-  return api.get(`/cases/${caseId}/items/${itemId}`)
+// get a single owned item by id
+export function getItem(itemId) {
+  return api.get(`/items/${itemId}`)
 }
 
-
-// create, update, and delete items
-export function createItem(caseId, fields) {
-  return api.post(`/cases/${caseId}/items`, fields)
+// create, update, and delete items - independent of any case
+export function createItem(fields) {
+  return api.post('/items', fields)
 }
 
-export function updateItem(caseId, itemId, updates) {
-  return api.put(`/cases/${caseId}/items/${itemId}`, updates)
+export function updateItem(itemId, updates) {
+  return api.put(`/items/${itemId}`, updates)
 }
 
-export function deleteItem(caseId, itemId) {
-  return api.delete(`/cases/${caseId}/items/${itemId}`)
+// deletes forever - removes it from every case it's attached to
+export function deleteItem(itemId) {
+  return api.delete(`/items/${itemId}`)
 }
