@@ -19,6 +19,7 @@ def create_app():
 
     # import models
     from app.models.case import Case
+    from app.models.case_item import CaseItem
     from app.models.case_share import CaseShare
     from app.models.item import Item
     from app.models.user import User

@@ -18,9 +18,11 @@ class Case(db.Model):
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     owner = db.relationship("User", back_populates="owned_cases")
-    items = db.relationship(
-        "Item", back_populates="case", cascade="all, delete-orphan"
+    # items attached to this case go through CaseItem
+    case_items = db.relationship(
+        "CaseItem", back_populates="case", cascade="all, delete-orphan"
     )
+    # deleting the case revokes everyone's shared access along with it
     shares = db.relationship(
         "CaseShare", back_populates="case", cascade="all, delete-orphan"
     )

@@ -17,13 +17,18 @@ class User(db.Model):
     last_name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
 
+    # cases this user owns deleting the user takes their cases with them
     owned_cases = db.relationship(
         "Case", back_populates="owner", cascade="all, delete-orphan"
     )
+    # cases shared to this user by someone else's owned_cases
     case_shares = db.relationship(
         "CaseShare", back_populates="user", cascade="all, delete-orphan"
     )
-    items_created = db.relationship("Item", back_populates="created_by")
+    # items this user owns, deleting the user takes their items with them
+    items = db.relationship(
+        "Item", back_populates="owner", cascade="all, delete-orphan"
+    )
 
     @db.validates("email")
     def validate_email(self, key, value):
