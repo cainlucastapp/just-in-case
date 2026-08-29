@@ -11,6 +11,7 @@ export function NavBar() {
       {user ? (
         <>
           <Link to="/cases">Cases</Link>
+          <Link to="/items">Items</Link>
           <span>{user.first_name}</span>
           <button type="button" onClick={logout}>
             Log out
