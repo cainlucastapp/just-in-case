@@ -26,13 +26,15 @@ def create_app():
 
     # import and register blueprints
     from app.routes.auth import auth_bp
+    from app.routes.case_items import case_items_bp
     from app.routes.case_shares import case_shares_bp
     from app.routes.cases import cases_bp
     from app.routes.items import items_bp
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(cases_bp, url_prefix="/api/cases")
-    app.register_blueprint(items_bp, url_prefix="/api/cases/<case_id>/items")
+    app.register_blueprint(items_bp, url_prefix="/api/items")
+    app.register_blueprint(case_items_bp, url_prefix="/api/cases/<case_id>/items")
     app.register_blueprint(case_shares_bp, url_prefix="/api/cases/<case_id>/shares")
 
     # error handler for HTTPExceptions raised by abort() or other code

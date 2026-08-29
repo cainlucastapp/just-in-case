@@ -1,21 +1,31 @@
 # app/services/item_service.py
+from flask import abort
+
 from app.extensions import db
+from app.models.case_item import CaseItem
 from app.models.item import Item
 
 
-def get_case_item(case, item_public_id):
-    # 404 if missing or if it belongs to a different case
-    return Item.query.filter_by(public_id=item_public_id, case_id=case.id).first_or_404()
+def list_owned_items(user):
+    # newest first, matches list_accessible_cases's ordering convention
+    return sorted(user.items, key=lambda item: item.created_at, reverse=True)
 
 
-def create_item(case, created_by, title, category, content):
+def get_owned_item(public_id, user):
+    # 404 if missing, 403 if the current user isn't the owner
+    item = Item.query.filter_by(public_id=public_id).first_or_404()
+    if item.owner_id != user.id:
+        abort(403, description="you do not own this item")
+    return item
+
+
+def create_item(owner, title, category, content):
     # content isn't a model-level validator, so check it here
     if not content or not content.strip():
         raise ValueError("content is required")
 
     item = Item(
-        case_id=case.id,
-        created_by_id=created_by.id,
+        owner_id=owner.id,
         title=title,
         category=category,
         content=content.strip(),
@@ -38,4 +48,28 @@ def update_item(item, title, category, content):
 
 
 def delete_item(item):
+    # cascades off every case_items row - gone from every case it was in
     db.session.delete(item)
+
+
+def list_case_items(case):
+    # items attached to this case, newest attachment first
+    case_items = sorted(case.case_items, key=lambda ci: ci.added_at, reverse=True)
+    return [case_item.item for case_item in case_items]
+
+
+def attach_item_to_case(case, item):
+    case_item = CaseItem(case_id=case.id, item_id=item.id)
+    db.session.add(case_item)
+    return case_item
+
+
+def get_case_attachment(case, item_public_id):
+    # 404 if the item doesn't exist or isn't attached to this case
+    item = Item.query.filter_by(public_id=item_public_id).first_or_404()
+    return CaseItem.query.filter_by(case_id=case.id, item_id=item.id).first_or_404()
+
+
+def detach_item_from_case(case_item):
+    # removes it from just this case - the item itself is untouched
+    db.session.delete(case_item)

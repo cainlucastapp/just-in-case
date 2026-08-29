@@ -2,36 +2,37 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
-from app.services.case_service import get_owned_case, get_readable_case
 from app.services.db_helpers import commit_or_409
-from app.services.item_service import create_item, delete_item, get_case_item, update_item
+from app.services.item_service import (
+    create_item,
+    delete_item,
+    get_owned_item,
+    list_owned_items,
+    update_item,
+)
 from app.utils.auth import get_current_user
 
 items_bp = Blueprint("items", __name__)
 
 
+# list my items
 @items_bp.get("")
 @jwt_required()
-def list_items(case_id):
-    # owner or a user the case is shared with can read its items
+def list_items():
     user = get_current_user()
-    case = get_readable_case(case_id, user)
-    return jsonify([item.to_dict() for item in case.items]), 200
+    return jsonify([item.to_dict() for item in list_owned_items(user)]), 200
 
 
+# create item
 @items_bp.post("")
 @jwt_required()
-def create(case_id):
-    # only the case owner can add items
+def create():
     user = get_current_user()
-    case = get_owned_case(case_id, user)
     data = request.get_json() or {}
 
-    # build and validate the new item
     try:
         item = create_item(
-            case=case,
-            created_by=user,
+            owner=user,
             title=data.get("title"),
             category=data.get("category"),
             content=data.get("content"),
@@ -39,7 +40,6 @@ def create(case_id):
     except ValueError as error:
         return jsonify({"error": str(error)}), 400
 
-    # persist the item
     conflict = commit_or_409("unable to create item")
     if conflict:
         return jsonify({"error": conflict}), 409
@@ -47,23 +47,21 @@ def create(case_id):
     return jsonify(item.to_dict()), 201
 
 
+# get item
 @items_bp.get("/<item_id>")
 @jwt_required()
-def get_item(case_id, item_id):
-    # owner or a user the case is shared with can read this item
+def get_item(item_id):
     user = get_current_user()
-    case = get_readable_case(case_id, user)
-    item = get_case_item(case, item_id)
+    item = get_owned_item(item_id, user)
     return jsonify(item.to_dict()), 200
 
 
+# update item
 @items_bp.put("/<item_id>")
 @jwt_required()
-def update(case_id, item_id):
-    # only the case owner can edit its items
+def update(item_id):
     user = get_current_user()
-    case = get_owned_case(case_id, user)
-    item = get_case_item(case, item_id)
+    item = get_owned_item(item_id, user)
     data = request.get_json() or {}
 
     try:
@@ -83,13 +81,12 @@ def update(case_id, item_id):
     return jsonify(item.to_dict()), 200
 
 
+# delete item forever - cascades off every case it's attached to
 @items_bp.delete("/<item_id>")
 @jwt_required()
-def delete(case_id, item_id):
-    # only the case owner can delete its items
+def delete(item_id):
     user = get_current_user()
-    case = get_owned_case(case_id, user)
-    item = get_case_item(case, item_id)
+    item = get_owned_item(item_id, user)
     delete_item(item)
 
     conflict = commit_or_409("unable to delete item")
