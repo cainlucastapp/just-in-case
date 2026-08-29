@@ -20,7 +20,7 @@ def get_owned_item(public_id, user):
 
 
 def create_item(owner, title, category, content):
-    # content isn't a model-level validator, so check it here
+    # check content isn't empty
     if not content or not content.strip():
         raise ValueError("content is required")
 
