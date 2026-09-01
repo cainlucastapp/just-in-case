@@ -76,7 +76,7 @@ export function HomePage() {
         <img src={fullLogo} alt="Just In Case — A Secure Household Knowledge Repository" />
       </section>
 
-      <section className="container reasons">
+      <section id="reasons" className="container reasons">
         {REASONS.map((reason, index) => (
           <ReasonRow
             key={reason.heading}

@@ -18,6 +18,7 @@
   gap: 48px;
   padding-top: 12px;
   padding-bottom: 64px;
+  scroll-margin-top: 96px;
 }
 
 .reason-row {
@@ -63,6 +64,7 @@
   .reason-row.is-reversed {
     flex-direction: column;
     align-items: stretch;
+    gap: 16px;
   }
 }
 
@@ -127,6 +129,30 @@
   display: flex;
   gap: 16px;
   margin-top: -8px;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+  }
+
+  .hero-actions {
+    display: none;
+  }
+
+  .hero-content {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .hero-heading {
+    font-size: 22px;
+  }
+
+  .hero-subtext {
+    font-size: 13px;
+  }
 }
 
 .carousel {
