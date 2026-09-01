@@ -50,7 +50,7 @@ export function CasesPage() {
       <h1>Your cases</h1>
       {error && <p role="alert">{error}</p>}
 
-      <CaseForm submitLabel="Add case" onSubmit={handleCreate} resetOnSubmit />
+      <CaseForm submitLabel="Add Case" onSubmit={handleCreate} resetOnSubmit />
 
       <ul>
         {cases.map((item) => (

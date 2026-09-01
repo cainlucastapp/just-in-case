@@ -64,7 +64,7 @@ export function ItemsPage() {
       <h1>Your items</h1>
       {error && <p role="alert">{error}</p>}
 
-      <ItemForm submitLabel="Add item" onSubmit={handleCreate} resetOnSubmit />
+      <ItemForm submitLabel="Add Item" onSubmit={handleCreate} resetOnSubmit />
 
       <ul>
         {items.map((item) => (

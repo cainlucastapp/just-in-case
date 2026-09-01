@@ -161,7 +161,7 @@ export function CaseDetailPage() {
       {isOwner ? (
         <CaseForm
           initialValues={caseData}
-          submitLabel="Save case"
+          submitLabel="Save Case"
           onSubmit={handleSaveCase}
         />
       ) : (

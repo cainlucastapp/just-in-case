@@ -37,11 +37,11 @@ export function ItemRow({ item, isOwner, onSave, onRemoveFromCase, onDeleteForev
           </button>
           {onRemoveFromCase && (
             <button type="button" onClick={() => onRemoveFromCase(item.id)}>
-              Remove from case
+              Remove From Case
             </button>
           )}
           <button type="button" onClick={() => onDeleteForever(item.id)}>
-            Delete forever
+            Delete Forever
           </button>
         </>
       )}
