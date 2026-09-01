@@ -2,16 +2,48 @@
 
 import { Link } from 'react-router-dom'
 import { Carousel } from '../components/home/Carousel'
+import { ReasonRow } from '../components/home/ReasonRow'
+import emergency from '../assets/images/emergency.png'
 import familyOne from '../assets/images/family-one.png'
 import familyThree from '../assets/images/family-three.png'
 import familyTwo from '../assets/images/family-two.png'
+import figureItOut from '../assets/images/figure-it-out.png'
 import fullLogo from '../assets/images/justincase-logo.png'
+import movingOn from '../assets/images/moving-on.png'
+import travel from '../assets/images/travel.png'
 import '../styles/home.css'
 
 const FAMILY_IMAGES = [
   { src: familyOne, alt: 'A family together at home' },
   { src: familyTwo, alt: 'A family together at home' },
   { src: familyThree, alt: 'A family together at home' },
+]
+
+const REASONS = [
+  {
+    image: travel,
+    alt: 'A family traveling together',
+    heading: 'Even When You’re Away',
+    body: 'Whether it’s a weekend trip or an ocean away, your family can find what they need without waiting for you to answer the phone.',
+  },
+  {
+    image: emergency,
+    alt: 'A family facing a sudden emergency',
+    heading: 'When the Unexpected Happens',
+    body: 'A sudden emergency doesn’t wait for a good time. When you can’t be the one who knows where everything is, Just In Case already does.',
+  },
+  {
+    image: figureItOut,
+    alt: 'A family trying to figure out household accounts',
+    heading: 'No More Guesswork',
+    body: 'Bank logins, insurance policies, the Wi-Fi password — nobody should have to piece together your life from scratch.',
+  },
+  {
+    image: movingOn,
+    alt: 'A family moving forward together',
+    heading: 'One Less Thing to Carry',
+    body: 'When your family is already grieving or overwhelmed, the last thing they need is a scavenger hunt. Just In Case means they can focus on each other.',
+  },
 ]
 
 export function HomePage() {
@@ -44,7 +76,18 @@ export function HomePage() {
         <img src={fullLogo} alt="Just In Case — A Secure Household Knowledge Repository" />
       </section>
 
-      {/* next section: still being designed */}
+      <section className="container reasons">
+        {REASONS.map((reason, index) => (
+          <ReasonRow
+            key={reason.heading}
+            image={reason.image}
+            alt={reason.alt}
+            heading={reason.heading}
+            body={reason.body}
+            reverse={index % 2 === 1}
+          />
+        ))}
+      </section>
     </div>
   )
 }
