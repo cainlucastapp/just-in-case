@@ -6,6 +6,7 @@ import { useAuth } from './context/auth-context'
 import { CaseDetailPage } from './pages/CaseDetailPage'
 import { CasesPage } from './pages/CasesPage'
 import { HomePage } from './pages/HomePage'
+import { HowItWorksPage } from './pages/HowItWorksPage'
 import { ItemsPage } from './pages/ItemsPage'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
@@ -33,6 +34,7 @@ function App() {
       <main className="main">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
