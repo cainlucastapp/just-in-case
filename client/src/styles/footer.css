@@ -1,0 +1,17 @@
+/* client/src/styles/footer.css */
+
+.footer {
+  background: var(--navy);
+  margin-top: auto;
+}
+
+.footer .container {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.footer p {
+  color: var(--text-on-navy);
+  font-size: 14px;
+  text-align: center;
+}
