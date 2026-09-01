@@ -1,0 +1,81 @@
+/* client/src/styles/auth.css */
+
+.auth-page {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-light);
+  padding: 48px 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.auth-logo {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+}
+
+.auth-card h1 {
+  font-size: 22px;
+  text-align: center;
+}
+
+.auth-card form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.auth-card input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-light);
+}
+
+.auth-card .btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.auth-switch {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.form-error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
