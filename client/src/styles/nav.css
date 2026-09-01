@@ -12,8 +12,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 14px;
-  padding-bottom: 14px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .navbar-brand {
@@ -27,7 +27,7 @@
 }
 
 .navbar-logo {
-  height: 36px;
+  height: 48px;
   width: auto;
 }
 

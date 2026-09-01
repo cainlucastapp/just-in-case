@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { Footer } from './components/Footer'
 import { NavBar } from './components/NavBar'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { useAuth } from './context/auth-context'
@@ -29,35 +30,39 @@ function App() {
     <>
       <NavBar />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/cases"
-          element={
-            <ProtectedRoute>
-              <CasesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/cases/:caseId"
-          element={
-            <ProtectedRoute>
-              <CaseDetailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/items"
-          element={
-            <ProtectedRoute>
-              <ItemsPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <main className="main">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/cases"
+            element={
+              <ProtectedRoute>
+                <CasesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cases/:caseId"
+            element={
+              <ProtectedRoute>
+                <CaseDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/items"
+            element={
+              <ProtectedRoute>
+                <ItemsPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </main>
+
+      <Footer />
     </>
   )
 }

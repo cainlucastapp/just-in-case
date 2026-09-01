@@ -3,13 +3,67 @@
 .brand-strip {
   display: flex;
   justify-content: center;
-  padding: 48px 24px;
+  padding: 28px 24px 12px;
 }
 
 .brand-strip img {
   width: 100%;
   max-width: 630px;
   height: auto;
+}
+
+.reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-top: 12px;
+  padding-bottom: 64px;
+}
+
+.reason-row {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.reason-row.is-reversed {
+  flex-direction: row-reverse;
+}
+
+.reason-image {
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.reason-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reason-text h3 {
+  font-size: 24px;
+  color: var(--navy);
+}
+
+.reason-text p {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+@media (max-width: 720px) {
+  .reason-row,
+  .reason-row.is-reversed {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .hero {
