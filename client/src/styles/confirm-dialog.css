@@ -1,0 +1,13 @@
+/* client/src/styles/confirm-dialog.css */
+
+.confirm-dialog {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.confirm-dialog .form-actions {
+  display: flex;
+  gap: 12px;
+}
