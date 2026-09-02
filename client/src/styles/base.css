@@ -124,6 +124,15 @@ a {
   color: var(--blue);
 }
 
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #a5361f;
+}
+
 .card {
   background: #fff;
   border: 1px solid var(--border);
