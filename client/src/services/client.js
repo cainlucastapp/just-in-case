@@ -34,6 +34,10 @@ export async function apiFetch(path, { headers, ...options } = {}) {
 
   // flask-jwt-extended errors
   if (!response.ok) {
+    // a token was sent and rejected - the session expired
+    if (token && response.status === 401) {
+      window.dispatchEvent(new Event('session-expired'))
+    }
     throw new ApiError(data?.error || data?.msg || 'request failed', response.status)
   }
 

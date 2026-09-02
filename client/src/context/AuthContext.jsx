@@ -11,6 +11,7 @@ import { AuthContext } from './auth-context'
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [sessionExpired, setSessionExpired] = useState(false)
 
   // restore the session on first load if a token was already saved
   useEffect(() => {
@@ -23,6 +24,17 @@ export function AuthProvider({ children }) {
       .then(setUser)
       .catch(() => localStorage.removeItem('accessToken'))
       .finally(() => setIsLoading(false))
+  }, [])
+
+  // the api client dispatches this when a request is rejected for an expired token
+  useEffect(() => {
+    function handleSessionExpired() {
+      localStorage.removeItem('accessToken')
+      setUser(null)
+      setSessionExpired(true)
+    }
+    window.addEventListener('session-expired', handleSessionExpired)
+    return () => window.removeEventListener('session-expired', handleSessionExpired)
   }, [])
 
   async function login(credentials) {
@@ -47,9 +59,19 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
-  return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  function dismissSessionExpired() {
+    setSessionExpired(false)
+  }
+
+  const value = {
+    user,
+    isLoading,
+    login,
+    register,
+    logout,
+    sessionExpired,
+    dismissSessionExpired,
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

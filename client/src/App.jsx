@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom'
 import { Footer } from './components/Footer'
 import { NavBar } from './components/NavBar'
+import { SessionExpiredModal } from './components/SessionExpiredModal'
 import { useAuth } from './context/auth-context'
 import { CaseDetailPage } from './pages/CaseDetailPage'
 import { CasesPage } from './pages/CasesPage'
@@ -32,6 +33,7 @@ function Layout() {
 
       <Footer />
       <ScrollRestoration />
+      <SessionExpiredModal />
     </>
   )
 }
