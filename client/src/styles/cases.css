@@ -1,0 +1,145 @@
+/* client/src/styles/cases.css */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 0 32px;
+}
+
+.page-header-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.page-header h1 {
+  font-size: 32px;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.new-case-btn {
+  margin-bottom: 32px;
+}
+
+.case-form-card {
+  padding: 28px;
+}
+
+.case-form-card h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.case-form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.case-form-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.case-form-card input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.case-form-card input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-light);
+}
+
+.case-form-card .form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  padding-bottom: 48px;
+}
+
+.case-card {
+  position: relative;
+  padding: 24px;
+  padding-bottom: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.case-card:hover {
+  box-shadow: 0 14px 30px -10px rgba(11, 31, 61, 0.25);
+  transform: translateY(-2px);
+}
+
+.case-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.case-card-link h2 {
+  font-size: 19px;
+}
+
+.case-card-link p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.case-card-delete {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.case-card-delete svg {
+  width: 18px;
+  height: 18px;
+}
+
+.case-card-delete:hover {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.empty-state {
+  color: var(--text-muted);
+  padding: 24px 0 48px;
+}
