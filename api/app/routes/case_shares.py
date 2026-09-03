@@ -1,8 +1,8 @@
 # app/routes/case_shares.py
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, abort, jsonify, request
 from flask_jwt_extended import jwt_required
 
-from app.services.case_service import get_owned_case
+from app.services.case_service import get_owned_case, get_readable_case
 from app.services.case_share_service import (
     create_share,
     delete_share,
@@ -44,12 +44,18 @@ def create_case_share(case_id):
     return jsonify(share.to_dict()), 201
 
 
-# delete case share
+# delete case share - the owner can revoke anyone, a shared user can remove themselves
 @case_shares_bp.delete("/<user_public_id>")
 @jwt_required()
 def delete_case_share(case_id, user_public_id):
     user = get_current_user()
-    case = get_owned_case(case_id, user)
+    case = get_readable_case(case_id, user)
+
+    is_owner = case.owner_id == user.id
+    is_self = user.public_id == user_public_id
+    if not (is_owner or is_self):
+        abort(403, description="you do not have permission to remove this share")
+
     share = get_case_share(case, user_public_id)
     delete_share(share)
 
