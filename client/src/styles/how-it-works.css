@@ -1,0 +1,83 @@
+/* client/src/styles/how-it-works.css */
+
+.how-it-works-page {
+  padding-bottom: 64px;
+}
+
+.how-it-works-intro {
+  text-align: center;
+  padding: 48px 0 40px;
+}
+
+.how-it-works-intro h1 {
+  margin-bottom: 28px;
+}
+
+.how-it-works-image {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.how-it-works-copy {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.lead {
+  font-size: 19px;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.how-it-works-features {
+  display: flex;
+  gap: 32px;
+}
+
+.how-it-works-feature {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.how-it-works-feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--blue-light);
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.how-it-works-feature-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.how-it-works-feature h3 {
+  font-size: 17px;
+}
+
+.how-it-works-feature p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .how-it-works-features {
+    flex-direction: column;
+    gap: 28px;
+  }
+}
