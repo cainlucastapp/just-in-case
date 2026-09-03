@@ -1,25 +1,25 @@
-/* client/src/styles/cases.css */
+/* client/src/styles/items.css */
 
-.new-case-btn {
+.new-item-btn {
   margin-bottom: 32px;
 }
 
-.case-form-card {
+.item-form-card {
   padding: 28px;
 }
 
-.case-form-card h2 {
+.item-form-card h2 {
   font-size: 20px;
   margin-bottom: 20px;
 }
 
-.case-form-card form {
+.item-form-card form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.case-form-card label {
+.item-form-card label {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -28,70 +28,76 @@
   color: var(--navy);
 }
 
-.case-form-card input {
+.item-form-card input,
+.item-form-card textarea {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 15px;
   font-family: inherit;
   color: var(--text);
+  resize: vertical;
 }
 
-.case-form-card input:focus {
+.item-form-card input:focus,
+.item-form-card textarea:focus {
   outline: none;
   border-color: var(--blue);
   box-shadow: 0 0 0 3px var(--blue-light);
 }
 
-.case-form-card .form-actions {
+.item-form-card .form-actions {
   display: flex;
   gap: 12px;
 }
 
-.case-grid {
+.item-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
   padding-bottom: 48px;
 }
 
-.case-card {
+.item-card {
   position: relative;
   padding: 24px;
-  padding-bottom: 44px;
+  padding-bottom: 48px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: box-shadow 0.15s ease, transform 0.1s ease;
 }
 
-.case-card:hover {
-  box-shadow: 0 14px 30px -10px rgba(11, 31, 61, 0.25);
-  transform: translateY(-2px);
-}
-
-.case-card-link {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.case-card-link h2 {
+.item-card h2 {
   font-size: 19px;
 }
 
-.case-card-link p {
+.item-card-category {
+  align-self: flex-start;
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.item-card-content {
   color: var(--text-muted);
   font-size: 14px;
   line-height: 1.5;
+  white-space: pre-wrap;
 }
 
-.case-card-delete {
+.item-card-actions {
   position: absolute;
   bottom: 12px;
   right: 12px;
+  display: flex;
+  gap: 4px;
+}
+
+.item-card-edit,
+.item-card-delete {
   width: 32px;
   height: 32px;
   display: flex;
@@ -105,12 +111,18 @@
   padding: 0;
 }
 
-.case-card-delete svg {
+.item-card-edit svg,
+.item-card-delete svg {
   width: 18px;
   height: 18px;
 }
 
-.case-card-delete:hover {
+.item-card-edit:hover {
+  color: var(--blue);
+  background: var(--blue-light);
+}
+
+.item-card-delete:hover {
   color: var(--danger);
   background: var(--danger-bg);
 }
