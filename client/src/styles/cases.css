@@ -56,9 +56,7 @@
 }
 
 .case-card {
-  position: relative;
   padding: 24px;
-  padding-bottom: 44px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -79,7 +77,6 @@
 }
 
 .case-card-badge {
-  align-self: flex-start;
   background: var(--blue-light);
   color: var(--blue-dark);
   font-size: 12px;
@@ -98,10 +95,16 @@
   line-height: 1.5;
 }
 
-.case-card-delete {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
+.case-card-footer {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  min-height: 32px;
+}
+
+.case-card-delete,
+.case-card-drop {
+  margin-left: auto;
   width: 32px;
   height: 32px;
   display: flex;
@@ -113,9 +116,11 @@
   color: var(--text-muted);
   cursor: pointer;
   padding: 0;
+  flex-shrink: 0;
 }
 
-.case-card-delete svg {
+.case-card-delete svg,
+.case-card-drop svg {
   width: 18px;
   height: 18px;
 }
@@ -123,4 +128,9 @@
 .case-card-delete:hover {
   color: var(--danger);
   background: var(--danger-bg);
+}
+
+.case-card-drop:hover {
+  color: var(--navy);
+  background: var(--border);
 }
