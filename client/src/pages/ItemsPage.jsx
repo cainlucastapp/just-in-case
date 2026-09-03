@@ -5,7 +5,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog'
 import { ItemForm } from '../components/items/ItemForm'
 import { Modal } from '../components/Modal'
 import { createItem, deleteItem, listItems, updateItem } from '../services/items'
-import itemsIcon from '../assets/images/items.png'
+import itemsIcon from '../assets/images/items.webp'
 import '../styles/items.css'
 
 export function ItemsPage() {

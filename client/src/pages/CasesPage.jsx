@@ -8,7 +8,7 @@ import { Modal } from '../components/Modal'
 import { useAuth } from '../context/auth-context'
 import { createCase, deleteCase, listCases } from '../services/cases'
 import { deleteShare } from '../services/shares'
-import casesIcon from '../assets/images/cases.png'
+import casesIcon from '../assets/images/cases.webp'
 import '../styles/cases.css'
 
 export function CasesPage() {

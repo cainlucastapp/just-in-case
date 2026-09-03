@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/auth-context'
-import logo from '../assets/images/menu-logo.png'
+import logo from '../assets/images/menu-logo.webp'
 import '../styles/nav.css'
 
 export function NavBar() {

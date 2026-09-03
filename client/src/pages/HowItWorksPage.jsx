@@ -1,6 +1,6 @@
 // client/src/pages/HowItWorksPage.jsx
 
-import howItWorksImage from '../assets/images/how-it-works.png'
+import howItWorksImage from '../assets/images/how-it-works.webp'
 import '../styles/how-it-works.css'
 
 const FEATURES = [

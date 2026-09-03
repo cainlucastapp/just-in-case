@@ -11,7 +11,7 @@ import { attachItem, detachItem, listCaseItems } from '../services/caseItems'
 import { getCase, updateCase } from '../services/cases'
 import { listItems, updateItem } from '../services/items'
 import { createShare, deleteShare, listShares } from '../services/shares'
-import openCaseIcon from '../assets/images/open-case.png'
+import openCaseIcon from '../assets/images/open-case.webp'
 import '../styles/case-detail.css'
 
 export function CaseDetailPage() {

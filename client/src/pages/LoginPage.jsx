@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/auth-context'
-import fullLogo from '../assets/images/justincase-logo.png'
+import fullLogo from '../assets/images/justincase-logo.webp'
 import '../styles/auth.css'
 
 export function LoginPage() {
