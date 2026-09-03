@@ -24,32 +24,57 @@ export function CaseShares({ shares, onCreate, onDelete }) {
   }
 
   return (
-    <div>
-      <h2>Shared with</h2>
-      {error && <p role="alert">{error}</p>}
+    <div className="shares-card card">
+      {shares.length === 0 ? (
+        <p className="empty-state">Not shared with anyone yet.</p>
+      ) : (
+        <ul className="shares-list">
+          {shares.map((share) => (
+            <li key={share.user.id} className="shares-list-item">
+              <span>
+                <span className="shares-list-name">
+                  {share.user.first_name} {share.user.last_name}
+                </span>
+                <span className="shares-list-email">{share.user.email}</span>
+              </span>
+              <button
+                type="button"
+                className="shares-list-remove"
+                aria-label="Revoke access"
+                onClick={() => onDelete(share.user.id)}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <ul>
-        {shares.map((share) => (
-          <li key={share.user.id}>
-            {share.user.email}
-            <button type="button" onClick={() => onDelete(share.user.id)}>
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Share with (email)
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-        </label>
-        <button type="submit" disabled={isSubmitting}>
+      <form onSubmit={handleSubmit} className="shares-form">
+        <input
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
           {isSubmitting ? 'Sharing…' : 'Share'}
         </button>
       </form>

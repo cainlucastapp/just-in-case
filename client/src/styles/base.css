@@ -168,3 +168,10 @@ a {
   color: var(--text-muted);
   padding: 24px 0 48px;
 }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
