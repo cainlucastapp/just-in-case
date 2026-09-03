@@ -78,6 +78,16 @@
   gap: 6px;
 }
 
+.case-card-badge {
+  align-self: flex-start;
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
 .case-card-link h2 {
   font-size: 19px;
 }
