@@ -27,8 +27,8 @@ export function CaseShares({ shares, onCreate, onDelete }) {
   }
 
   // revoke access
-  function handleConfirmRevoke() {
-    onDelete(confirmRevoke.userId)
+  async function handleConfirmRevoke() {
+    await onDelete(confirmRevoke.userId)
     setConfirmRevoke(null)
   }
 

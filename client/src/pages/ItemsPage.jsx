@@ -58,13 +58,14 @@ export function ItemsPage() {
   // delete item forever
   async function handleConfirmDelete() {
     const itemId = confirmDelete.id
-    setConfirmDelete(null)
     setError('')
     try {
       await deleteItem(itemId)
       setItems((current) => current.filter((item) => item.id !== itemId))
+      setConfirmDelete(null)
     } catch (err) {
       setError(err.message || 'unable to delete item')
+      setConfirmDelete(null)
     }
   }
 

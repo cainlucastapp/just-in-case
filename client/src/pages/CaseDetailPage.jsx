@@ -117,13 +117,14 @@ export function CaseDetailPage() {
   // remove item from case - item itself is untouched
   async function handleConfirmRemove() {
     const itemId = confirmRemove.id
-    setConfirmRemove(null)
     setError('')
     try {
       await detachItem(caseId, itemId)
       setItems((current) => current.filter((item) => item.id !== itemId))
+      setConfirmRemove(null)
     } catch (err) {
       setError(err.message || 'unable to remove item from case')
+      setConfirmRemove(null)
     }
   }
 

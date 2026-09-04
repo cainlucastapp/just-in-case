@@ -47,26 +47,28 @@ export function CasesPage() {
   // delete case
   async function handleConfirmDelete() {
     const caseId = confirmDelete.id
-    setConfirmDelete(null)
     setError('')
     try {
       await deleteCase(caseId)
       setCases((current) => current.filter((item) => item.id !== caseId))
+      setConfirmDelete(null)
     } catch (err) {
       setError(err.message || 'unable to delete case')
+      setConfirmDelete(null)
     }
   }
 
   // drop a case shared with you
   async function handleConfirmDrop() {
     const caseId = confirmDrop.id
-    setConfirmDrop(null)
     setError('')
     try {
       await deleteShare(caseId, user.id)
       setCases((current) => current.filter((item) => item.id !== caseId))
+      setConfirmDrop(null)
     } catch (err) {
       setError(err.message || 'unable to drop case')
+      setConfirmDrop(null)
     }
   }
 
