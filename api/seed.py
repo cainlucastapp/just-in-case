@@ -10,6 +10,7 @@ from app.models.case_item import CaseItem
 from app.models.case_share import CaseShare
 from app.models.item import Item
 from app.models.user import User
+from app.utils.crypto import generate_salt
 
 app = create_app()
 
@@ -59,10 +60,13 @@ with app.app_context():
 
     # items are owned by whoever creates them, not by a case - attaching the
     # same item to more than one case (see alice_ssn below) doesn't duplicate it
+    # encryption_salt is set before content on every item - the setter
+    # encrypts against whatever salt is already on the instance
     alice_checking = Item(
         owner_id=alice.id,
         title="Chase Checking Account",
         category="bank_account",
+        encryption_salt=generate_salt(),
         content=(
             "Account #: 000123456789, Routing #: 021000021, "
             "online banking login: alice.n"
@@ -72,6 +76,7 @@ with app.app_context():
         owner_id=alice.id,
         title="Riverbend HOA",
         category="hoa",
+        encryption_salt=generate_salt(),
         content=(
             "Dues $220/quarter, paid via HOA portal, "
             "contact: manager@riverbendhoa.com, (555) 019-2231"
@@ -81,6 +86,7 @@ with app.app_context():
         owner_id=alice.id,
         title="Wells Fargo Mortgage",
         category="mortgage",
+        encryption_salt=generate_salt(),
         content=(
             "Loan #: 55891023, servicer: Wells Fargo Home Lending, "
             "autopay from Chase checking on the 1st"
@@ -92,18 +98,21 @@ with app.app_context():
         owner_id=alice.id,
         title="Alice's Social Security Number",
         category="identity",
+        encryption_salt=generate_salt(),
         content="000-12-3456",
     )
     bob_insurance = Item(
         owner_id=bob.id,
         title="Life Insurance Policy",
         category="insurance",
+        encryption_salt=generate_salt(),
         content="MetLife policy #MP-88213, agent: Dana Cho, (555) 048-7710",
     )
     bob_safe_deposit = Item(
         owner_id=bob.id,
         title="Safe Deposit Box",
         category="document",
+        encryption_salt=generate_salt(),
         content="First National Bank, box #214, key kept in home office desk drawer",
     )
 
