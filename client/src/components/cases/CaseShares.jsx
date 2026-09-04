@@ -1,12 +1,15 @@
 // client/src/components/cases/CaseShares.jsx
 
 import { useState } from 'react'
+import { ConfirmDialog } from '../ConfirmDialog'
 
 // owner-only: who has access to this case, plus add/remove by email
 export function CaseShares({ shares, onCreate, onDelete }) {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  // { userId, name } | null - which share is pending revoke confirmation
+  const [confirmRevoke, setConfirmRevoke] = useState(null)
 
   // share with a user
   async function handleSubmit(event) {
@@ -21,6 +24,12 @@ export function CaseShares({ shares, onCreate, onDelete }) {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // revoke access
+  function handleConfirmRevoke() {
+    onDelete(confirmRevoke.userId)
+    setConfirmRevoke(null)
   }
 
   return (
@@ -41,7 +50,12 @@ export function CaseShares({ shares, onCreate, onDelete }) {
                 type="button"
                 className="shares-list-remove"
                 aria-label="Revoke access"
-                onClick={() => onDelete(share.user.id)}
+                onClick={() =>
+                  setConfirmRevoke({
+                    userId: share.user.id,
+                    name: `${share.user.first_name} ${share.user.last_name}`,
+                  })
+                }
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -78,6 +92,15 @@ export function CaseShares({ shares, onCreate, onDelete }) {
           {isSubmitting ? 'Sharing…' : 'Share'}
         </button>
       </form>
+
+      {confirmRevoke && (
+        <ConfirmDialog
+          message={`Revoke access for ${confirmRevoke.name}? They will no longer be able to view this case.`}
+          confirmLabel="Revoke Access"
+          onConfirm={handleConfirmRevoke}
+          onCancel={() => setConfirmRevoke(null)}
+        />
+      )}
     </div>
   )
 }
