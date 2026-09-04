@@ -4,6 +4,7 @@ from flask import abort
 from app.extensions import db
 from app.models.case_item import CaseItem
 from app.models.item import Item
+from app.utils.crypto import generate_salt
 
 
 def list_owned_items(user):
@@ -28,8 +29,10 @@ def create_item(owner, title, category, content):
         owner_id=owner.id,
         title=title,
         category=category,
-        content=content.strip(),
+        # set before content - the setter encrypts against this salt
+        encryption_salt=generate_salt(),
     )
+    item.content = content.strip()
     db.session.add(item)
     return item
 

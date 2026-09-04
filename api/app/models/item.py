@@ -2,6 +2,7 @@
 import uuid
 
 from app.extensions import db
+from app.utils.crypto import decrypt, encrypt, generate_salt
 
 
 class Item(db.Model):
@@ -15,7 +16,10 @@ class Item(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     category = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    # encrypted at rest, see the content property below
+    _content = db.Column("content", db.Text, nullable=False)
+    # unique per item, used to derive its encryption key
+    encryption_salt = db.Column(db.String(32), nullable=False, default=generate_salt)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
@@ -30,6 +34,15 @@ class Item(db.Model):
         if not value or not value.strip():
             raise ValueError(f"{key} is required")
         return value.strip()
+
+    # transparently decrypts on read, encrypts on write
+    @property
+    def content(self):
+        return decrypt(self._content, self.encryption_salt)
+
+    @content.setter
+    def content(self, value):
+        self._content = encrypt(value, self.encryption_salt)
 
     def to_dict(self):
         return {
