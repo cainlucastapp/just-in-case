@@ -1,0 +1,23 @@
+/* client/src/styles/loading-spinner.css */
+
+.loading-spinner-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--blue-light);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: loading-spinner-spin 0.7s linear infinite;
+}
+
+@keyframes loading-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

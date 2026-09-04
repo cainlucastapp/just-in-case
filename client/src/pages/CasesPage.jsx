@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CaseForm } from '../components/cases/CaseForm'
 import { ConfirmDialog } from '../components/ConfirmDialog'
+import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Modal } from '../components/Modal'
 import { useAuth } from '../context/auth-context'
 import { createCase, deleteCase, listCases } from '../services/cases'
@@ -70,7 +71,7 @@ export function CasesPage() {
   }
 
   if (isLoading) {
-    return <p>Loading…</p>
+    return <LoadingSpinner />
   }
 
   return (
