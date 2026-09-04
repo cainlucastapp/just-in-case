@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { ItemForm } from '../components/items/ItemForm'
+import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Modal } from '../components/Modal'
 import { createItem, deleteItem, listItems, updateItem } from '../services/items'
 import itemsIcon from '../assets/images/items.webp'
@@ -68,7 +69,7 @@ export function ItemsPage() {
   }
 
   if (isLoading) {
-    return <p>Loading…</p>
+    return <LoadingSpinner />
   }
 
   return (

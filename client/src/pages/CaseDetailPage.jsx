@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { CaseForm } from '../components/cases/CaseForm'
 import { CaseShares } from '../components/cases/CaseShares'
 import { ItemForm } from '../components/items/ItemForm'
+import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Modal } from '../components/Modal'
 import { useAuth } from '../context/auth-context'
 import { attachItem, detachItem, listCaseItems } from '../services/caseItems'
@@ -145,7 +146,7 @@ export function CaseDetailPage() {
   }
 
   if (isLoading) {
-    return <p>Loading…</p>
+    return <LoadingSpinner />
   }
 
   if (!caseData) {
