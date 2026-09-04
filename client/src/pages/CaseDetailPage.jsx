@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { CaseForm } from '../components/cases/CaseForm'
 import { CaseShares } from '../components/cases/CaseShares'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { ItemForm } from '../components/items/ItemForm'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Modal } from '../components/Modal'
@@ -30,6 +31,8 @@ export function CaseDetailPage() {
   const [isAttachModalOpen, setIsAttachModalOpen] = useState(false)
   // item | null - which item is open in the edit modal
   const [editingItem, setEditingItem] = useState(null)
+  // { id, title } | null - which item is pending remove-from-case confirmation
+  const [confirmRemove, setConfirmRemove] = useState(null)
 
   // load case and its attached items
   useEffect(() => {
@@ -112,7 +115,9 @@ export function CaseDetailPage() {
   }
 
   // remove item from case - item itself is untouched
-  async function handleRemoveFromCase(itemId) {
+  async function handleConfirmRemove() {
+    const itemId = confirmRemove.id
+    setConfirmRemove(null)
     setError('')
     try {
       await detachItem(caseId, itemId)
@@ -310,7 +315,7 @@ export function CaseDetailPage() {
                     type="button"
                     className="item-card-remove"
                     aria-label="Remove from case"
-                    onClick={() => handleRemoveFromCase(item.id)}
+                    onClick={() => setConfirmRemove({ id: item.id, title: item.title })}
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -338,6 +343,15 @@ export function CaseDetailPage() {
           </div>
           <CaseShares shares={shares} onCreate={handleCreateShare} onDelete={handleDeleteShare} />
         </>
+      )}
+
+      {confirmRemove && (
+        <ConfirmDialog
+          message={`Remove "${confirmRemove.title}" from this case? The item itself won't be deleted.`}
+          confirmLabel="Remove From Case"
+          onConfirm={handleConfirmRemove}
+          onCancel={() => setConfirmRemove(null)}
+        />
       )}
     </div>
   )
