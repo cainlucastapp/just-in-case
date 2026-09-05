@@ -8,6 +8,7 @@ __pycache__/
 *.pyc
 api/*.db
 api/instance/
+api/*.log
 
 # Node
 client/node_modules/
