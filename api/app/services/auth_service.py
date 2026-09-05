@@ -3,10 +3,15 @@ from app.extensions import db
 from app.models.user import User
 
 
-# register user
-def register_user(email, password, first_name, last_name):
+# shared by registration and password changes
+def validate_password_strength(password):
     if not password or len(password) < 8:
         raise ValueError("password must be at least 8 characters")
+
+
+# register user
+def register_user(email, password, first_name, last_name):
+    validate_password_strength(password)
     user = User(email=email, first_name=first_name, last_name=last_name)
     user.set_password(password)
     db.session.add(user)

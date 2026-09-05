@@ -63,12 +63,18 @@ export function AuthProvider({ children }) {
     setSessionExpired(false)
   }
 
+  // Update user
+  function updateUser(updatedUser) {
+    setUser(updatedUser)
+  }
+
   const value = {
     user,
     isLoading,
     login,
     register,
     logout,
+    updateUser,
     sessionExpired,
     dismissSessionExpired,
   }

@@ -1,0 +1,70 @@
+/* client/src/styles/account.css */
+
+.account-form-card {
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.account-form-card h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.account-form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-form-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.account-form-card input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.account-form-card input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-light);
+}
+
+.account-form-card .form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.form-error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.danger-zone {
+  padding: 28px;
+  margin-bottom: 48px;
+  border: 1px solid var(--danger);
+}
+
+.danger-zone h2 {
+  font-size: 20px;
+  color: var(--danger);
+  margin-bottom: 8px;
+}
+
+.danger-zone p {
+  margin-bottom: 16px;
+}

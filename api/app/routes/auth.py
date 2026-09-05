@@ -6,6 +6,9 @@ from sqlalchemy.exc import IntegrityError
 from app.extensions import db
 from app.models.user import User
 from app.services.auth_service import authenticate_user, register_user
+from app.services.db_helpers import commit_or_409
+from app.services.user_service import change_password, delete_account, update_profile
+from app.utils.auth import get_current_user
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -60,3 +63,60 @@ def me():
     # resolve the current user from the jwt
     user = User.query.filter_by(public_id=get_jwt_identity()).first_or_404()
     return jsonify(user.to_dict()), 200
+
+
+@auth_bp.put("/me")
+@jwt_required()
+def update_me():
+    user = get_current_user()
+    data = request.get_json() or {}
+
+    try:
+        update_profile(
+            user,
+            first_name=data.get("first_name"),
+            last_name=data.get("last_name"),
+            email=data.get("email"),
+        )
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+
+    conflict = commit_or_409("an account with that email already exists")
+    if conflict:
+        return jsonify({"error": conflict}), 409
+
+    return jsonify(user.to_dict()), 200
+
+
+@auth_bp.put("/me/password")
+@jwt_required()
+def update_password():
+    user = get_current_user()
+    data = request.get_json() or {}
+
+    try:
+        change_password(
+            user,
+            current_password=data.get("current_password"),
+            new_password=data.get("new_password"),
+        )
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+
+    db.session.commit()
+    return "", 204
+
+
+@auth_bp.delete("/me")
+@jwt_required()
+def delete_me():
+    user = get_current_user()
+    data = request.get_json() or {}
+
+    try:
+        delete_account(user, current_password=data.get("current_password"))
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+
+    db.session.commit()
+    return "", 204
