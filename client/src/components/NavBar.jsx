@@ -39,7 +39,9 @@ export function NavBar() {
           <div className={isMenuOpen ? 'navbar-actions is-open' : 'navbar-actions'}>
             <Link to="/cases">Cases</Link>
             <Link to="/items">Items</Link>
-            <span className="navbar-user">{user.first_name}</span>
+            <Link to="/account" className="navbar-user">
+              {user.first_name}
+            </Link>
             <button type="button" className="btn btn-secondary" onClick={logout}>
               Log Out
             </button>

@@ -14,6 +14,7 @@ import { LoadingSpinner } from './components/LoadingSpinner'
 import { NavBar } from './components/NavBar'
 import { SessionExpiredModal } from './components/SessionExpiredModal'
 import { useAuth } from './context/auth-context'
+import { AccountPage } from './pages/AccountPage'
 import { CaseDetailPage } from './pages/CaseDetailPage'
 import { CasesPage } from './pages/CasesPage'
 import { HomePage } from './pages/HomePage'
@@ -84,6 +85,7 @@ const router = createBrowserRouter(
         <Route path="/cases" element={<CasesPage />} />
         <Route path="/cases/:caseId" element={<CaseDetailPage />} />
         <Route path="/items" element={<ItemsPage />} />
+        <Route path="/account" element={<AccountPage />} />
       </Route>
     </Route>,
   ),

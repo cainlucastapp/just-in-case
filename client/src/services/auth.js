@@ -19,3 +19,22 @@ export function login({ email, password }) {
 export function getCurrentUser() {
   return api.get('/auth/me')
 }
+
+export function updateProfile({ firstName, lastName, email }) {
+  return api.put('/auth/me', {
+    first_name: firstName,
+    last_name: lastName,
+    email,
+  })
+}
+
+export function changePassword({ currentPassword, newPassword }) {
+  return api.put('/auth/me/password', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  })
+}
+
+export function deleteAccount(currentPassword) {
+  return api.delete('/auth/me', { current_password: currentPassword })
+}
