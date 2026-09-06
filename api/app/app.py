@@ -3,7 +3,7 @@ from flask import Flask
 from werkzeug.exceptions import HTTPException
 
 from app.config import Config
-from app.extensions import bcrypt, cors, db, jwt, migrate
+from app.extensions import bcrypt, cors, db, jwt, limiter, migrate
 
 
 def create_app():
@@ -16,6 +16,7 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
     cors.init_app(app, origins=app.config["CORS_ORIGINS"], supports_credentials=True)
+    limiter.init_app(app)
 
     # import models
     from app.models.case import Case

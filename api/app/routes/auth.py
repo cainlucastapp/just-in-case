@@ -10,7 +10,7 @@ from flask_jwt_extended import (
 )
 from sqlalchemy.exc import IntegrityError
 
-from app.extensions import db
+from app.extensions import db, limiter
 from app.models.user import User
 from app.services.auth_service import authenticate_user, register_user
 from app.services.db_helpers import commit_or_409
@@ -30,6 +30,7 @@ def _issue_session(user, status_code):
 
 
 @auth_bp.post("/register")
+@limiter.limit("10 per hour")
 def register():
     # parse the request body, default to empty dict if missing/invalid
     data = request.get_json() or {}
@@ -56,6 +57,7 @@ def register():
 
 
 @auth_bp.post("/login")
+@limiter.limit("5 per minute")
 def login():
     # parse the request body, default to empty dict if missing/invalid
     data = request.get_json() or {}
