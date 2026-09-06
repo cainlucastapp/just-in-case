@@ -1,6 +1,13 @@
 # app/routes/auth.py
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+    jwt_required,
+    set_refresh_cookies,
+    unset_refresh_cookies,
+)
 from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db
@@ -11,6 +18,15 @@ from app.services.user_service import change_password, delete_account, update_pr
 from app.utils.auth import get_current_user
 
 auth_bp = Blueprint("auth", __name__)
+
+
+# issue a new session - access token in the body, refresh token as a cookie
+def _issue_session(user, status_code):
+    access_token = create_access_token(identity=user.public_id)
+    refresh_token = create_refresh_token(identity=user.public_id)
+    response = jsonify({"access_token": access_token, "user": user.to_dict()})
+    set_refresh_cookies(response, refresh_token)
+    return response, status_code
 
 
 @auth_bp.post("/register")
@@ -36,9 +52,7 @@ def register():
         db.session.rollback()
         return jsonify({"error": "an account with that email already exists"}), 409
 
-    # issue a jwt keyed on the public_id
-    token = create_access_token(identity=user.public_id)
-    return jsonify({"access_token": token, "user": user.to_dict()}), 201
+    return _issue_session(user, 201)
 
 
 @auth_bp.post("/login")
@@ -52,9 +66,23 @@ def login():
     except ValueError as error:
         return jsonify({"error": str(error)}), 401
 
-    # issue a jwt keyed on the public_id
-    token = create_access_token(identity=user.public_id)
-    return jsonify({"access_token": token, "user": user.to_dict()}), 200
+    return _issue_session(user, 200)
+
+
+@auth_bp.post("/refresh")
+@jwt_required(refresh=True, locations=["cookies"])
+def refresh():
+    # mint a new access token from the refresh cookie
+    access_token = create_access_token(identity=get_jwt_identity())
+    return jsonify({"access_token": access_token}), 200
+
+
+@auth_bp.post("/logout")
+def logout():
+    # clear the refresh cookie
+    response = jsonify({"message": "logged out"})
+    unset_refresh_cookies(response)
+    return response, 200
 
 
 @auth_bp.get("/me")
