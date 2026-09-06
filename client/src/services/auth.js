@@ -16,6 +16,11 @@ export function login({ email, password }) {
   return api.post('/auth/login', { email, password })
 }
 
+// clears the refresh cookie
+export function logoutRequest() {
+  return api.post('/auth/logout')
+}
+
 export function getCurrentUser() {
   return api.get('/auth/me')
 }

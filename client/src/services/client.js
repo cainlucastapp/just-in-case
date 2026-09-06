@@ -3,6 +3,9 @@
 // falls back to the vite dev proxy when no absolute api url is configured
 const BASE_URL = import.meta.env.VITE_API_URL || '/api'
 
+// these never trigger an automatic refresh-and-retry on a 401
+const NO_REFRESH_PATHS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/logout']
+
 // carries the http status
 export class ApiError extends Error {
   constructor(message, status) {
@@ -12,14 +15,23 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiFetch(path, { headers, ...options } = {}) {
-  // attach the saved jwt to every request
+// reads a plain (non-httponly) cookie by name
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
+  return match ? decodeURIComponent(match[1]) : null
+}
+
+// network call
+async function rawFetch(path, { headers, ...options } = {}) {
   const token = localStorage.getItem('accessToken')
+  const csrfToken = getCookie('csrf_refresh_token')
 
   const response = await fetch(`${BASE_URL}${path}`, {
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
       ...headers,
     },
     ...options,
@@ -27,21 +39,55 @@ export async function apiFetch(path, { headers, ...options } = {}) {
 
   // 204 No Content responses have no body
   if (response.status === 204) {
-    return null
+    return { response, data: null }
   }
 
   const data = await response.json().catch(() => null)
+  return { response, data }
+}
 
-  // flask-jwt-extended errors
-  if (!response.ok) {
-    // a token was sent and rejected - the session expired
-    if (token && response.status === 401) {
-      window.dispatchEvent(new Event('session-expired'))
-    }
-    throw new ApiError(data?.error || data?.msg || 'request failed', response.status)
+// one refresh in flight at a time
+let refreshPromise = null
+
+function refreshAccessToken() {
+  if (!refreshPromise) {
+    refreshPromise = rawFetch('/auth/refresh', { method: 'POST' })
+      .then(({ response, data }) => {
+        if (!response.ok) {
+          throw new ApiError(data?.error || data?.msg || 'refresh failed', response.status)
+        }
+        return data
+      })
+      .finally(() => {
+        refreshPromise = null
+      })
+  }
+  return refreshPromise
+}
+
+export async function apiFetch(path, options = {}, isRetry = false) {
+  const { response, data } = await rawFetch(path, options)
+
+  if (response.ok) {
+    return data
   }
 
-  return data
+  // an expired access token gets one silent refresh-and-retry
+  if (response.status === 401 && !isRetry && !NO_REFRESH_PATHS.includes(path)) {
+    try {
+      const { access_token: newAccessToken } = await refreshAccessToken()
+      localStorage.setItem('accessToken', newAccessToken)
+      return apiFetch(path, options, true)
+    } catch {
+      // refresh failed
+    }
+  }
+
+  // flask-jwt-extended errors
+  if (localStorage.getItem('accessToken') && response.status === 401) {
+    window.dispatchEvent(new Event('session-expired'))
+  }
+  throw new ApiError(data?.error || data?.msg || 'request failed', response.status)
 }
 
 // export an api object with methods

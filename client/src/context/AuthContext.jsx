@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import {
   getCurrentUser,
   login as loginRequest,
+  logoutRequest,
   register as registerRequest,
 } from '../services/auth'
 import { AuthContext } from './auth-context'
@@ -26,7 +27,7 @@ export function AuthProvider({ children }) {
       .finally(() => setIsLoading(false))
   }, [])
 
-  // the api client dispatches this when a request is rejected for an expired token
+  // request is rejected for an expired token
   useEffect(() => {
     function handleSessionExpired() {
       localStorage.removeItem('accessToken')
@@ -38,7 +39,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function login(credentials) {
-    // save the jwt so future requests and page reloads stay authenticated
+    // save the jwt
     const { access_token: accessToken, user: loggedInUser } = await loginRequest(credentials)
     localStorage.setItem('accessToken', accessToken)
     setUser(loggedInUser)
@@ -46,7 +47,7 @@ export function AuthProvider({ children }) {
   }
 
   async function register(details) {
-    // registering also logs the new user in, same token handling as login
+    // registering also logs the new user in
     const { access_token: accessToken, user: newUser } = await registerRequest(details)
     localStorage.setItem('accessToken', accessToken)
     setUser(newUser)
@@ -54,9 +55,10 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    // jwt auth is stateless, logging out is a client-side clear
+    // clear local state immediately
     localStorage.removeItem('accessToken')
     setUser(null)
+    logoutRequest().catch(() => {})
   }
 
   function dismissSessionExpired() {
