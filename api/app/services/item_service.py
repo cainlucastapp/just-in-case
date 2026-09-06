@@ -12,9 +12,24 @@ def list_owned_items(user):
     return sorted(user.items, key=lambda item: item.created_at, reverse=True)
 
 
+# owner or visible through a shared/owned case
+def _item_visible_to(item, user):
+    if item.owner_id == user.id:
+        return True
+    for case_item in item.case_items:
+        case = case_item.case
+        if case.owner_id == user.id or any(
+            share.user_id == user.id for share in case.shares
+        ):
+            return True
+    return False
+
+
 def get_owned_item(public_id, user):
-    # 404 if missing, 403 if the current user isn't the owner
+    # 404 if missing or not visible, 403 if visible but not owned
     item = Item.query.filter_by(public_id=public_id).first_or_404()
+    if not _item_visible_to(item, user):
+        abort(404)
     if item.owner_id != user.id:
         abort(403, description="you do not own this item")
     return item

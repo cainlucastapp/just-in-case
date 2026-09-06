@@ -13,21 +13,21 @@ def list_accessible_cases(user):
     return sorted(cases, key=lambda case: case.created_at, reverse=True)
 
 
-def get_owned_case(public_id, user):
-    # 404 if missing, 403 if the current user isn't the owner
-    case = Case.query.filter_by(public_id=public_id).first_or_404()
-    if case.owner_id != user.id:
-        abort(403, description="you do not own this case")
-    return case
-
-
 def get_readable_case(public_id, user):
-    # 404 if missing, 403 unless the current user owns or is shared on it
+    # 404 if missing or no relationship to this user
     case = Case.query.filter_by(public_id=public_id).first_or_404()
     is_owner = case.owner_id == user.id
     is_shared = any(share.user_id == user.id for share in case.shares)
     if not (is_owner or is_shared):
-        abort(403, description="you do not have access to this case")
+        abort(404)
+    return case
+
+
+def get_owned_case(public_id, user):
+    # 403 if readable but not owned
+    case = get_readable_case(public_id, user)
+    if case.owner_id != user.id:
+        abort(403, description="you do not own this case")
     return case
 
 
