@@ -7,6 +7,7 @@ import {
   logoutRequest,
   register as registerRequest,
 } from '../services/auth'
+import { invalidateSession } from '../services/client'
 import { AuthContext } from './auth-context'
 
 export function AuthProvider({ children }) {
@@ -55,7 +56,8 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    // clear local state immediately
+    // discard any refresh already in flight before clearing local state
+    invalidateSession()
     localStorage.removeItem('accessToken')
     setUser(null)
     logoutRequest().catch(() => {})

@@ -46,6 +46,13 @@ async function rawFetch(path, { headers, ...options } = {}) {
   return { response, data }
 }
 
+// bumped by logout 
+let sessionGeneration = 0
+
+export function invalidateSession() {
+  sessionGeneration += 1
+}
+
 // one refresh in flight at a time
 let refreshPromise = null
 
@@ -74,8 +81,13 @@ export async function apiFetch(path, options = {}, isRetry = false) {
 
   // an expired access token gets one silent refresh-and-retry
   if (response.status === 401 && !isRetry && !NO_REFRESH_PATHS.includes(path)) {
+    const generationAtStart = sessionGeneration
     try {
       const { access_token: newAccessToken } = await refreshAccessToken()
+      // a logout happened while this refresh was in flight discard it
+      if (sessionGeneration !== generationAtStart) {
+        throw new ApiError('session ended', 401)
+      }
       localStorage.setItem('accessToken', newAccessToken)
       return apiFetch(path, options, true)
     } catch {
