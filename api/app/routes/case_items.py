@@ -1,5 +1,5 @@
 # app/routes/case_items.py
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
 
 from app.services.case_service import get_owned_case, get_readable_case
@@ -12,6 +12,7 @@ from app.services.item_service import (
     list_case_items,
 )
 from app.utils.auth import get_current_user
+from app.utils.request_data import get_json_body
 
 case_items_bp = Blueprint("case_items", __name__)
 
@@ -33,7 +34,7 @@ def attach(case_id):
     # only the case owner can attach items, and only items they also own
     user = get_current_user()
     case = get_owned_case(case_id, user)
-    data = request.get_json() or {}
+    data = get_json_body()
     item = get_owned_item(data.get("item_id"), user)
 
     attach_item_to_case(case, item)

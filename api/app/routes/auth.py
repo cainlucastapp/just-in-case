@@ -1,5 +1,5 @@
 # app/routes/auth.py
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -16,6 +16,7 @@ from app.services.auth_service import authenticate_user, register_user
 from app.services.db_helpers import commit_or_409
 from app.services.user_service import change_password, delete_account, update_profile
 from app.utils.auth import get_current_user
+from app.utils.request_data import get_json_body
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -33,7 +34,7 @@ def _issue_session(user, status_code):
 @limiter.limit("10 per hour")
 def register():
     # parse the request body, default to empty dict if missing/invalid
-    data = request.get_json() or {}
+    data = get_json_body()
 
     # build and validate the new user
     try:
@@ -60,7 +61,7 @@ def register():
 @limiter.limit("5 per minute")
 def login():
     # parse the request body, default to empty dict if missing/invalid
-    data = request.get_json() or {}
+    data = get_json_body()
 
     # look up the user and verify the password
     try:
@@ -99,7 +100,7 @@ def me():
 @jwt_required()
 def update_me():
     user = get_current_user()
-    data = request.get_json() or {}
+    data = get_json_body()
 
     try:
         update_profile(
@@ -122,7 +123,7 @@ def update_me():
 @jwt_required()
 def update_password():
     user = get_current_user()
-    data = request.get_json() or {}
+    data = get_json_body()
 
     try:
         change_password(
@@ -141,7 +142,7 @@ def update_password():
 @jwt_required()
 def delete_me():
     user = get_current_user()
-    data = request.get_json() or {}
+    data = get_json_body()
 
     try:
         delete_account(user, current_password=data.get("current_password"))

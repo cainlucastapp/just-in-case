@@ -1,5 +1,5 @@
 # app/routes/case_shares.py
-from flask import Blueprint, abort, jsonify, request
+from flask import Blueprint, abort, jsonify
 from flask_jwt_extended import jwt_required
 
 from app.services.case_service import get_owned_case, get_readable_case
@@ -11,6 +11,7 @@ from app.services.case_share_service import (
 )
 from app.services.db_helpers import commit_or_409
 from app.utils.auth import get_current_user
+from app.utils.request_data import get_json_body
 
 case_shares_bp = Blueprint("case_shares", __name__)
 
@@ -30,7 +31,7 @@ def list_case_shares(case_id):
 def create_case_share(case_id):
     user = get_current_user()
     case = get_owned_case(case_id, user)
-    data = request.get_json() or {}
+    data = get_json_body()
 
     try:
         share = create_share(case, data.get("email"))

@@ -6,7 +6,7 @@ from app.services.auth_service import validate_password_strength
 # validate current password
 def verify_current_password(user, current_password):
     # bcrypt errors on a non-string
-    if not current_password or not user.check_password(current_password):
+    if not isinstance(current_password, str) or not user.check_password(current_password):
         raise ValueError("current password is incorrect")
 
 

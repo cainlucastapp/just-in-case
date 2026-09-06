@@ -29,7 +29,7 @@ class Case(db.Model):
 
     @db.validates("title")
     def validate_title(self, key, value):
-        if not value or not value.strip():
+        if not isinstance(value, str) or not value.strip():
             raise ValueError("title is required")
         return value.strip()
 

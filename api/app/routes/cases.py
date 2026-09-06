@@ -1,5 +1,5 @@
 # app/routes/cases.py
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
 
 from app.services.case_service import (
@@ -12,6 +12,7 @@ from app.services.case_service import (
 )
 from app.services.db_helpers import commit_or_409
 from app.utils.auth import get_current_user
+from app.utils.request_data import get_json_body
 
 cases_bp = Blueprint("cases", __name__)
 
@@ -29,7 +30,7 @@ def list_cases():
 @jwt_required()
 def create():
     user = get_current_user()
-    data = request.get_json() or {}
+    data = get_json_body()
 
     # build and validate the new case
     try:
@@ -64,7 +65,7 @@ def update(public_id):
     # only the owner can edit a case
     user = get_current_user()
     case = get_owned_case(public_id, user)
-    data = request.get_json() or {}
+    data = get_json_body()
 
     try:
         update_case(case, title=data.get("title"), description=data.get("description"))

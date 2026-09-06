@@ -37,7 +37,7 @@ def get_owned_item(public_id, user):
 
 def create_item(owner, title, category, content):
     # check content isn't empty
-    if not content or not content.strip():
+    if not isinstance(content, str) or not content.strip():
         raise ValueError("content is required")
 
     item = Item(
@@ -59,7 +59,7 @@ def update_item(item, title, category, content):
     if category is not None:
         item.category = category
     if content is not None:
-        if not content.strip():
+        if not isinstance(content, str) or not content.strip():
             raise ValueError("content is required")
         item.content = content.strip()
     return item

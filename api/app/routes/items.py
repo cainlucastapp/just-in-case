@@ -1,5 +1,5 @@
 # app/routes/items.py
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
 
 from app.services.db_helpers import commit_or_409
@@ -11,6 +11,7 @@ from app.services.item_service import (
     update_item,
 )
 from app.utils.auth import get_current_user
+from app.utils.request_data import get_json_body
 
 items_bp = Blueprint("items", __name__)
 
@@ -28,7 +29,7 @@ def list_items():
 @jwt_required()
 def create():
     user = get_current_user()
-    data = request.get_json() or {}
+    data = get_json_body()
 
     try:
         item = create_item(
@@ -62,7 +63,7 @@ def get_item(item_id):
 def update(item_id):
     user = get_current_user()
     item = get_owned_item(item_id, user)
-    data = request.get_json() or {}
+    data = get_json_body()
 
     try:
         update_item(

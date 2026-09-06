@@ -5,7 +5,7 @@ from app.models.user import User
 
 # shared by registration and password changes
 def validate_password_strength(password):
-    if not password or len(password) < 8:
+    if not isinstance(password, str) or len(password) < 8:
         raise ValueError("password must be at least 8 characters")
 
 
@@ -20,13 +20,13 @@ def register_user(email, password, first_name, last_name):
 
 # find user by email
 def find_user_by_email(email):
-    normalized_email = (email or "").strip().lower()
+    normalized_email = email.strip().lower() if isinstance(email, str) else ""
     return User.query.filter_by(email=normalized_email).first()
 
 
 # authenticate user
 def authenticate_user(email, password):
     user = find_user_by_email(email)
-    if not user or not user.check_password(password):
+    if not user or not isinstance(password, str) or not user.check_password(password):
         raise ValueError("invalid email or password")
     return user

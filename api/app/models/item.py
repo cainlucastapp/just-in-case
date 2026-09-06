@@ -31,7 +31,7 @@ class Item(db.Model):
 
     @db.validates("title", "category")
     def validate_required_text(self, key, value):
-        if not value or not value.strip():
+        if not isinstance(value, str) or not value.strip():
             raise ValueError(f"{key} is required")
         return value.strip()
 

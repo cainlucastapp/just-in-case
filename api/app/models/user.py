@@ -32,13 +32,13 @@ class User(db.Model):
 
     @db.validates("email")
     def validate_email(self, key, value):
-        if not value or "@" not in value:
+        if not isinstance(value, str) or "@" not in value:
             raise ValueError("a valid email is required")
         return value.strip().lower()
 
     @db.validates("first_name", "last_name")
     def validate_name(self, key, value):
-        if not value or not value.strip():
+        if not isinstance(value, str) or not value.strip():
             raise ValueError(f"{key} is required")
         return value.strip()
 
