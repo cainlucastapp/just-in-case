@@ -12,11 +12,13 @@ export function CaseForm({
 }) {
   const [title, setTitle] = useState(initialValues.title ?? '')
   const [description, setDescription] = useState(initialValues.description ?? '')
+  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // submit case
   async function handleSubmit(event) {
     event.preventDefault()
+    setError('')
     setIsSubmitting(true)
     try {
       await onSubmit({ title, description })
@@ -24,8 +26,8 @@ export function CaseForm({
         setTitle('')
         setDescription('')
       }
-    } catch {
-      // caller already surfaced the error, just leave the fields as typed
+    } catch (err) {
+      setError(err.message || 'unable to save case')
     } finally {
       setIsSubmitting(false)
     }
@@ -48,6 +50,11 @@ export function CaseForm({
           onChange={(event) => setDescription(event.target.value)}
         />
       </label>
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
       <div className="form-actions">
         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
           {isSubmitting ? 'Saving…' : submitLabel}

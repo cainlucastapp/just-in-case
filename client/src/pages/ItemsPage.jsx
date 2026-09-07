@@ -1,5 +1,6 @@
 // client/src/pages/ItemsPage.jsx
 
+import { Pencil, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { ItemForm } from '../components/items/ItemForm'
@@ -29,30 +30,18 @@ export function ItemsPage() {
 
   // create item
   async function handleCreate(values) {
-    setError('')
-    try {
-      const newItem = await createItem(values)
-      setItems((current) => [newItem, ...current])
-      setIsCreating(false)
-    } catch (err) {
-      setError(err.message || 'unable to create item')
-      throw err
-    }
+    const newItem = await createItem(values)
+    setItems((current) => [newItem, ...current])
+    setIsCreating(false)
   }
 
   // save item
   async function handleSave(values) {
-    setError('')
-    try {
-      const updated = await updateItem(editingItem.id, values)
-      setItems((current) =>
-        current.map((item) => (item.id === updated.id ? updated : item)),
-      )
-      setEditingItem(null)
-    } catch (err) {
-      setError(err.message || 'unable to update item')
-      throw err
-    }
+    const updated = await updateItem(editingItem.id, values)
+    setItems((current) =>
+      current.map((item) => (item.id === updated.id ? updated : item)),
+    )
+    setEditingItem(null)
   }
 
   // delete item forever
@@ -142,17 +131,7 @@ export function ItemsPage() {
                   aria-label="Edit item"
                   onClick={() => setEditingItem(item)}
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                    <path d="M15 5l4 4" />
-                  </svg>
+                  <Pencil />
                 </button>
                 <button
                   type="button"
@@ -160,20 +139,7 @@ export function ItemsPage() {
                   aria-label="Delete item"
                   onClick={() => setConfirmDelete({ id: item.id, title: item.title })}
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
-                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                  </svg>
+                  <Trash2 />
                 </button>
               </div>
             </div>

@@ -1,5 +1,6 @@
 // client/src/pages/CaseDetailPage.jsx
 
+import { Pencil, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { CaseForm } from '../components/cases/CaseForm'
@@ -27,6 +28,7 @@ export function CaseDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [isAttaching, setIsAttaching] = useState(false)
+  const [attachError, setAttachError] = useState('')
   const [isEditingCase, setIsEditingCase] = useState(false)
   const [isAttachModalOpen, setIsAttachModalOpen] = useState(false)
   // item | null - which item is open in the edit modal
@@ -48,7 +50,7 @@ export function CaseDetailPage() {
   // current user owns this case
   const isOwner = Boolean(caseData && user && caseData.owner_id === user.id)
 
-  // shares are owner-only
+  // shares are owner only
   useEffect(() => {
     if (!isOwner) return
     listShares(caseId)
@@ -56,7 +58,7 @@ export function CaseDetailPage() {
       .catch((err) => setError(err.message || 'unable to load shares'))
   }, [caseId, isOwner])
 
-  // owner's full item list, for the attach picker
+  // owner's full item list
   useEffect(() => {
     if (!isOwner) return
     listItems()
@@ -70,22 +72,16 @@ export function CaseDetailPage() {
 
   // update case
   async function handleSaveCase(values) {
-    setError('')
-    try {
-      const updated = await updateCase(caseId, values)
-      setCaseData(updated)
-      setIsEditingCase(false)
-    } catch (err) {
-      setError(err.message || 'unable to update case')
-      throw err
-    }
+    const updated = await updateCase(caseId, values)
+    setCaseData(updated)
+    setIsEditingCase(false)
   }
 
   // attach an existing item
   async function handleAttach(event) {
     event.preventDefault()
     if (!selectedItemId) return
-    setError('')
+    setAttachError('')
     setIsAttaching(true)
     try {
       const attached = await attachItem(caseId, selectedItemId)
@@ -93,7 +89,7 @@ export function CaseDetailPage() {
       setSelectedItemId('')
       setIsAttachModalOpen(false)
     } catch (err) {
-      setError(err.message || 'unable to attach item')
+      setAttachError(err.message || 'unable to attach item')
     } finally {
       setIsAttaching(false)
     }
@@ -101,20 +97,14 @@ export function CaseDetailPage() {
 
   // save item
   async function handleSaveItem(values) {
-    setError('')
-    try {
-      const updated = await updateItem(editingItem.id, values)
-      setItems((current) =>
-        current.map((item) => (item.id === updated.id ? updated : item)),
-      )
-      setEditingItem(null)
-    } catch (err) {
-      setError(err.message || 'unable to update item')
-      throw err
-    }
+    const updated = await updateItem(editingItem.id, values)
+    setItems((current) =>
+      current.map((item) => (item.id === updated.id ? updated : item)),
+    )
+    setEditingItem(null)
   }
 
-  // remove item from case - item itself is untouched
+  // remove item from case
   async function handleConfirmRemove() {
     const itemId = confirmRemove.id
     setError('')
@@ -130,14 +120,8 @@ export function CaseDetailPage() {
 
   // share case
   async function handleCreateShare(email) {
-    setError('')
-    try {
-      const newShare = await createShare(caseId, email)
-      setShares((current) => [...current, newShare])
-    } catch (err) {
-      setError(err.message || 'unable to share case')
-      throw err
-    }
+    const newShare = await createShare(caseId, email)
+    setShares((current) => [...current, newShare])
   }
 
   // revoke access
@@ -174,17 +158,7 @@ export function CaseDetailPage() {
             aria-label="Edit case"
             onClick={() => setIsEditingCase(true)}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-              <path d="M15 5l4 4" />
-            </svg>
+            <Pencil />
           </button>
         )}
       </div>
@@ -246,6 +220,11 @@ export function CaseDetailPage() {
                     ))}
                   </select>
                 </label>
+                {attachError && (
+                  <p className="form-error" role="alert">
+                    {attachError}
+                  </p>
+                )}
                 <div className="form-actions">
                   <button
                     type="submit"
@@ -300,17 +279,7 @@ export function CaseDetailPage() {
                     aria-label="Edit item"
                     onClick={() => setEditingItem(item)}
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                      <path d="M15 5l4 4" />
-                    </svg>
+                    <Pencil />
                   </button>
                   <button
                     type="button"
@@ -318,17 +287,7 @@ export function CaseDetailPage() {
                     aria-label="Remove from case"
                     onClick={() => setConfirmRemove({ id: item.id, title: item.title })}
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
+                    <X />
                   </button>
                 </div>
               )}

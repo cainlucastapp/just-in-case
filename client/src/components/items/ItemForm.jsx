@@ -13,11 +13,13 @@ export function ItemForm({
   const [title, setTitle] = useState(initialValues.title ?? '')
   const [category, setCategory] = useState(initialValues.category ?? '')
   const [content, setContent] = useState(initialValues.content ?? '')
+  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // submit item
   async function handleSubmit(event) {
     event.preventDefault()
+    setError('')
     setIsSubmitting(true)
     try {
       await onSubmit({ title, category, content })
@@ -26,8 +28,8 @@ export function ItemForm({
         setCategory('')
         setContent('')
       }
-    } catch {
-      // caller already surfaced the error, just leave the fields as typed
+    } catch (err) {
+      setError(err.message || 'unable to save item')
     } finally {
       setIsSubmitting(false)
     }
@@ -59,6 +61,11 @@ export function ItemForm({
           required
         />
       </label>
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
       <div className="form-actions">
         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
           {isSubmitting ? 'Saving…' : submitLabel}
