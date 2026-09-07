@@ -43,7 +43,7 @@ export function RegisterPage() {
         <h1>Sign Up</h1>
         <form onSubmit={handleSubmit}>
           <label>
-            First name
+            First Name
             <input
               value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
@@ -51,7 +51,7 @@ export function RegisterPage() {
             />
           </label>
           <label>
-            Last name
+            Last Name
             <input
               value={lastName}
               onChange={(event) => setLastName(event.target.value)}
@@ -77,7 +77,7 @@ export function RegisterPage() {
             />
           </label>
           <label>
-            Confirm password
+            Confirm Password
             <input
               type="password"
               value={confirmPassword}
