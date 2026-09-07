@@ -1,5 +1,6 @@
 # app/models/user.py
 import uuid
+from datetime import datetime, timezone
 
 from app.extensions import bcrypt, db
 
@@ -16,6 +17,7 @@ class User(db.Model):
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
+    password_changed_at = db.Column(db.DateTime, default=db.func.now())
 
     # cases this user owns deleting the user takes their cases with them
     owned_cases = db.relationship(
@@ -44,6 +46,7 @@ class User(db.Model):
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
+        self.password_changed_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)

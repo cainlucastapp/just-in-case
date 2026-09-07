@@ -1,8 +1,11 @@
 # app/routes/auth.py
-from flask import Blueprint, jsonify
+from datetime import datetime, timezone
+
+from flask import Blueprint, abort, jsonify
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
+    get_jwt,
     get_jwt_identity,
     jwt_required,
     set_refresh_cookies,
@@ -75,8 +78,16 @@ def login():
 @auth_bp.post("/refresh")
 @jwt_required(refresh=True, locations=["cookies"])
 def refresh():
-    # mint a new access token from the refresh cookie
-    access_token = create_access_token(identity=get_jwt_identity())
+    user = User.query.filter_by(public_id=get_jwt_identity()).first_or_404()
+
+    # reject a token issued before the last password change
+    issued_at = datetime.fromtimestamp(get_jwt()["iat"], tz=timezone.utc).replace(
+        tzinfo=None
+    )
+    if user.password_changed_at and issued_at < user.password_changed_at:
+        abort(401, description="session invalidated by a password change")
+
+    access_token = create_access_token(identity=user.public_id)
     return jsonify({"access_token": access_token}), 200
 
 
