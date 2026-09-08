@@ -43,6 +43,19 @@ def create_app():
     def handle_http_exception(error):
         return {"error": error.description}, error.code
 
+    # normalize JWT error responses to always return JSON with an "error" key
+    @jwt.unauthorized_loader
+    def handle_missing_token(reason):
+        return {"error": reason}, 401
+
+    @jwt.expired_token_loader
+    def handle_expired_token(jwt_header, jwt_payload):
+        return {"error": "token has expired"}, 401
+
+    @jwt.invalid_token_loader
+    def handle_invalid_token(reason):
+        return {"error": reason}, 422
+
     # simple liveness check at the root
     @app.route("/")
     def index():
