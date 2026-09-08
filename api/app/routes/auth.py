@@ -1,7 +1,5 @@
 # app/routes/auth.py
-from datetime import datetime, timezone
-
-from flask import Blueprint, abort, jsonify
+from flask import Blueprint, jsonify
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -13,7 +11,11 @@ from flask_jwt_extended import (
 from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db, limiter
-from app.services.auth_service import authenticate_user, register_user
+from app.services.auth_service import (
+    authenticate_user,
+    ensure_token_after_password_change,
+    register_user,
+)
 from app.services.db_helpers import commit_or_409
 from app.services.user_service import change_password, delete_account, update_profile
 from app.utils.auth import get_current_user
@@ -78,12 +80,10 @@ def login():
 def refresh():
     user = get_current_user()
 
-    # reject a token issued before the last password change
-    issued_at = datetime.fromtimestamp(get_jwt()["iat"], tz=timezone.utc).replace(
-        tzinfo=None
-    )
-    if user.password_changed_at and issued_at < user.password_changed_at:
-        abort(401, description="session invalidated by a password change")
+    try:
+        ensure_token_after_password_change(user, get_jwt()["iat"])
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 401
 
     access_token = create_access_token(identity=user.public_id)
     return jsonify({"access_token": access_token}), 200
