@@ -10,7 +10,11 @@ export function ConfirmDialog({ message, confirmLabel = 'Delete', onConfirm, onC
   // run the confirm action, stay open with a pending state until it finishes
   async function handleConfirm() {
     setIsConfirming(true)
-    await onConfirm()
+    try {
+      await onConfirm()
+    } finally {
+      setIsConfirming(false)
+    }
   }
 
   // ignore backdrop/escape while a confirm is in flight
