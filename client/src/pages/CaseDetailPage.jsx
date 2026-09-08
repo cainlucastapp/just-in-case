@@ -170,7 +170,7 @@ export function CaseDetailPage() {
       )}
 
       {isEditingCase && (
-        <Modal onClose={() => setIsEditingCase(false)}>
+        <Modal onClose={() => setIsEditingCase(false)} label="Edit Case">
           <div className="case-form-card card">
             <h2>Edit Case</h2>
             <CaseForm
@@ -197,7 +197,7 @@ export function CaseDetailPage() {
       </div>
 
       {isAttachModalOpen && (
-        <Modal onClose={() => setIsAttachModalOpen(false)}>
+        <Modal onClose={() => setIsAttachModalOpen(false)} label="Attach Item">
           <div className="attach-form-card card">
             <h2>Attach Item</h2>
             {attachableItems.length === 0 ? (
@@ -248,7 +248,7 @@ export function CaseDetailPage() {
       )}
 
       {editingItem && (
-        <Modal onClose={() => setEditingItem(null)}>
+        <Modal onClose={() => setEditingItem(null)} label="Edit Item">
           <div className="item-form-card card">
             <h2>Edit Item</h2>
             <ItemForm

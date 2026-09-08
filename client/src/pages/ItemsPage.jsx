@@ -87,7 +87,7 @@ export function ItemsPage() {
       </button>
 
       {isCreating && (
-        <Modal onClose={() => setIsCreating(false)}>
+        <Modal onClose={() => setIsCreating(false)} label="New Item">
           <div className="item-form-card card">
             <h2>New Item</h2>
             <ItemForm
@@ -101,7 +101,7 @@ export function ItemsPage() {
       )}
 
       {editingItem && (
-        <Modal onClose={() => setEditingItem(null)}>
+        <Modal onClose={() => setEditingItem(null)} label="Edit Item">
           <div className="item-form-card card">
             <h2>Edit Item</h2>
             <ItemForm

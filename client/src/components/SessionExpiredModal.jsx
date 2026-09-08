@@ -12,7 +12,7 @@ export function SessionExpiredModal() {
   }
 
   return (
-    <Modal onClose={dismissSessionExpired}>
+    <Modal onClose={dismissSessionExpired} label="Session expired">
       <div className="confirm-dialog card">
         <p>Your session has expired. Please log in again.</p>
         <div className="form-actions">

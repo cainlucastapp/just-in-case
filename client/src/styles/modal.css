@@ -1,14 +1,26 @@
 /* client/src/styles/modal.css */
 
-.modal-backdrop {
+.modal {
   position: fixed;
   inset: 0;
-  background: rgba(11, 31, 61, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
   padding: 24px;
-  z-index: 100;
+  border: none;
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.modal:not([open]) {
+  display: none;
+}
+
+.modal::backdrop {
+  background: rgba(11, 31, 61, 0.5);
 }
 
 .modal-content {

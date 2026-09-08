@@ -96,7 +96,7 @@ export function CasesPage() {
       </button>
 
       {isCreating && (
-        <Modal onClose={() => setIsCreating(false)}>
+        <Modal onClose={() => setIsCreating(false)} label="New Case">
           <div className="case-form-card card">
             <h2>New Case</h2>
             <CaseForm

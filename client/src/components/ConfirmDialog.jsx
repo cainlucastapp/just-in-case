@@ -20,7 +20,7 @@ export function ConfirmDialog({ message, confirmLabel = 'Delete', onConfirm, onC
   }
 
   return (
-    <Modal onClose={handleClose}>
+    <Modal onClose={handleClose} label={confirmLabel}>
       <div className="confirm-dialog card">
         <p>{message}</p>
         <div className="form-actions">
@@ -32,11 +32,13 @@ export function ConfirmDialog({ message, confirmLabel = 'Delete', onConfirm, onC
           >
             {isConfirming ? 'Removing…' : confirmLabel}
           </button>
+          {/* focus cancel, not the destructive button */}
           <button
             type="button"
             className="btn btn-secondary"
             onClick={onCancel}
             disabled={isConfirming}
+            data-autofocus
           >
             Cancel
           </button>

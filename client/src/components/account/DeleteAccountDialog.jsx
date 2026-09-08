@@ -29,7 +29,7 @@ export function DeleteAccountDialog({ onConfirm, onCancel }) {
   }
 
   return (
-    <Modal onClose={handleClose}>
+    <Modal onClose={handleClose} label="Delete account">
       <div className="confirm-dialog account-form-card card">
         <h2>Delete Account</h2>
         <p>
