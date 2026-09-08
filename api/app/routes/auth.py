@@ -6,7 +6,6 @@ from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     get_jwt,
-    get_jwt_identity,
     jwt_required,
     set_refresh_cookies,
     unset_refresh_cookies,
@@ -14,7 +13,6 @@ from flask_jwt_extended import (
 from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db, limiter
-from app.models.user import User
 from app.services.auth_service import authenticate_user, register_user
 from app.services.db_helpers import commit_or_409
 from app.services.user_service import change_password, delete_account, update_profile
@@ -78,7 +76,7 @@ def login():
 @auth_bp.post("/refresh")
 @jwt_required(refresh=True, locations=["cookies"])
 def refresh():
-    user = User.query.filter_by(public_id=get_jwt_identity()).first_or_404()
+    user = get_current_user()
 
     # reject a token issued before the last password change
     issued_at = datetime.fromtimestamp(get_jwt()["iat"], tz=timezone.utc).replace(
@@ -102,8 +100,7 @@ def logout():
 @auth_bp.get("/me")
 @jwt_required()
 def me():
-    # resolve the current user from the jwt
-    user = User.query.filter_by(public_id=get_jwt_identity()).first_or_404()
+    user = get_current_user()
     return jsonify(user.to_dict()), 200
 
 
